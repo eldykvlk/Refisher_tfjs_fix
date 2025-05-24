@@ -1,0 +1,263 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Refisher</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    #preview {
+      max-width: 100%;
+      max-height: 300px;
+      margin: 10px auto;
+      display: none;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      object-fit: contain;
+    }
+    #result {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      word-break: break-word;
+    }
+    #loading {
+      display: none;
+      margin-top: 10px;
+      font-style: italic;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="bg-white text-[#0B3B73] min-h-screen flex flex-col">
+  <div class="w-full max-w-5xl mx-auto flex flex-col min-h-screen px-4 sm:px-6 lg:px-8 py-6">
+    <header class="pt-4 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+      <nav class="flex justify-end space-x-6 text-xs font-semibold text-[#0B3B73] mb-4 sm:mb-0">
+        <a class="flex items-center space-x-1 hover:underline" href="#">
+          <i class="fas fa-user fa-xs"></i>
+          <span>Halaman Utama</span>
+        </a>
+<a class="flex items-center space-x-1 hover:underline" href="#articles" id="bacaArtikel">
+  <i class="fas fa-book fa-xs"></i>
+  <span>Baca Artikel</span>
+</a>
+      </nav>
+      <div class="flex items-center space-x-2 justify-center sm:justify-start">
+        <img alt="Refisher logo, a stylized fish icon in blue and white" class="w-10 h-10 sm:w-12 sm:h-12" src="https://storage.googleapis.com/a1aa/image/7e20f7f5-b454-40e7-18b4-b50e7ac6fbe1.jpg" />
+        <span class="font-semibold text-[#0B3B73] text-xl sm:text-2xl leading-none">Refisher</span>
+      </div>
+    </header>
+    <main class="flex-grow flex flex-col items-center mt-8">
+      <h1 class="text-center font-semibold text-[#0B3B73] text-lg sm:text-2xl leading-7 sm:leading-8 max-w-3xl">
+        Ayo Cek Kualitas Kesegaran Ikanmu<br />Dalam Sekejap!
+      </h1>
+      <p class="text-center text-xs sm:text-sm leading-5 sm:leading-6 mt-2 text-[#0B3B73] max-w-3xl">
+        Lakukan Foto Pada Mata Ikan Dan Refisher Akan Bantu Mengetahui<br />Apakah Ikanmu Fresh Atau Tidak
+      </p>
+      <div class="mt-6 w-full max-w-xl">
+        <div onclick="document.getElementById('imageInput').click()" class="mx-auto w-full h-32 sm:h-40 border border-dashed border-[#0B3B73] rounded-lg flex flex-col justify-center items-center text-[#0B3B73] text-xs sm:text-sm leading-5 cursor-pointer select-none hover:bg-[#e6f0fa] transition-colors duration-200">
+          <i class="fas fa-upload fa-lg mb-1"></i>
+          <span class="text-center">Klik Untuk Unggah Gambar<br />Atau Scan Gambar Mata Ikan</span>
+        </div>
+        <input type="file" id="imageInput" accept="image/*" class="hidden" />
+        <img id="preview" src="" alt="Preview of the uploaded fish eye image showing clarity and freshness" class="mt-4 rounded-lg shadow-md" />
+        <div id="loading" class="mt-2">Loading model or processing...</div>
+        <div id="result" class="mt-2">Prediction: None</div>
+        <button onclick="triggerPrediction()" class="block mx-auto mt-6 bg-[#0B3B73] hover:bg-[#094a5f] text-white text-sm font-semibold px-8 py-2 rounded transition-colors duration-200" type="button">
+          Cek Kesegaran Ikan
+        </button>
+<div id="predictionBox" style="display: none;"></div>
+      </div>
+<section id="articles" class="mt-12 w-full max-w-xl px-2 sm:px-0">
+        <h2 class="text-center font-semibold text-[#0B3B73] text-base sm:text-lg leading-6 mb-6">Baca Artikel Kami</h2>
+        <p class="text-xs sm:text-sm leading-5 text-center mb-8 max-w-3xl mx-auto">
+          Ingin tahu lebih banyak tentang kesegaran ikan? Temukan panduan lengkap, tips praktis, dan informasi penting lainnya di sini.
+        </p>
+        <article class="flex space-x-4 mb-6">
+          <img alt="Close-up of a fresh fish eye with clear and bright appearance" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded" src="https://storage.googleapis.com/a1aa/image/49876b3c-5125-4a82-5d6b-836b468ad331.jpg" />
+          <div class="flex flex-col text-xs sm:text-sm leading-5 text-[#0B3B73]">
+            <h3 class="font-semibold mb-1">Ciri-Ciri Ikan Segar yang Perlu Kamu Ketahui</h3>
+            <p class="mb-2">Kondisi tubuh, kondisi kesegaran dan mata, warna, hingga aroma ikan segar kamu tak salah pilih saat belanja di pasar.</p>
+            <a class="text-[#0B3B73] underline self-start" href="#">Baca Selengkapnya</a>
+          </div>
+        </article>
+        <article class="flex space-x-4 mb-6">
+          <img alt="Fresh fish body showing shiny scales and firm texture" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded" src="https://storage.googleapis.com/a1aa/image/78ed53cf-043b-4fa3-124f-cf1f664ab95a.jpg" />
+          <div class="flex flex-col text-xs sm:text-sm leading-5 text-[#0B3B73]">
+            <h3 class="font-semibold mb-1">Bahaya Mengonsumsi Ikan Tidak Segar</h3>
+            <p class="mb-2">Ikan yang tak segar bisa memicu masalah pencernaan hingga keracunan. Pelajari risikonya dan cara menghindarinya.</p>
+            <a class="text-[#0B3B73] underline self-start" href="#">Baca Selengkapnya</a>
+          </div>
+        </article>
+        <article class="flex space-x-4">
+          <img alt="Proper fish storage in refrigerator to maintain freshness" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded" src="https://storage.googleapis.com/a1aa/image/9017cee2-20f6-4e06-c59f-aab89f283861.jpg" />
+          <div class="flex flex-col text-xs sm:text-sm leading-5 text-[#0B3B73]">
+            <h3 class="font-semibold mb-1">Tips Menyimpan Ikan agar Tetap Segar Lebih Lama</h3>
+            <p class="mb-2">Simpan ikan dengan cara yang benar di kulkas atau freezer agar kualitas dan rasa tetap terjaga lebih dari satu hari.</p>
+            <a class="text-[#0B3B73] underline self-start" href="#">Baca Selengkapnya</a>
+          </div>
+        </article>
+      </section>
+    </main>
+    <footer class="text-center text-[9px] sm:text-xs text-[#0B3B73] mt-12 pb-6">
+      <p>© 2025 Refisher. All rights reserved.</p>
+      <p class="mt-1">Designed with care to keep your fish fresh and your meals safe.</p>
+    </footer>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('preview');
+    const resultDiv = document.getElementById('result');
+    const loadingDiv = document.getElementById('loading');
+
+    let modelPromise = loadModel();
+
+    async function loadModel() {
+      loadingDiv.style.display = 'block';
+      resultDiv.textContent = 'Prediction: Loading model...';
+      try {
+        const model = await tf.loadGraphModel('./tfjs_model_ikan/model.json');
+        resultDiv.textContent = 'Kami sudah siap untuk membantu kamu memilah';
+        loadingDiv.style.display = 'none';
+        return model;
+      } catch (error) {
+        resultDiv.textContent = 'Error: Gagal memuat model.';
+        console.error(error);
+        loadingDiv.style.display = 'none';
+        return null;
+      }
+    }
+
+    imageInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+      resultDiv.textContent = 'Prediction: Image loaded, ready to check.';
+      resultDiv.style.color = '#0B3B73';
+    });
+
+    function preprocessImage(imageElement) {
+      const tensor = tf.browser.fromPixels(imageElement)
+        .resizeNearestNeighbor([224, 224])
+        .toFloat();
+      const offset = tf.scalar(127.5);
+      const normalized = tensor.sub(offset).div(offset);
+      return normalized.expandDims();
+    }
+
+    async function triggerPrediction() {
+      const model = await modelPromise;
+      if (!model || preview.src === '') {
+        resultDiv.textContent = 'Error: Model belum siap atau gambar belum dipilih.';
+        resultDiv.style.color = 'red';
+        return;
+      }
+
+      loadingDiv.style.display = 'block';
+      resultDiv.textContent = 'Prediction: Processing...';
+      resultDiv.style.color = '#0B3B73';
+
+      let tensor = null;
+      try {
+        tensor = preprocessImage(preview);
+        const prediction = await model.predict(tensor).data();
+        const score = prediction[0];
+        if (score > 0.8) {
+          resultDiv.textContent = `✅ Segar (Skor: ${score.toFixed(2)})`;
+          resultDiv.style.color = 'green';
+        } else {
+          resultDiv.textContent = `❌ Tidak Segar (Skor: ${score.toFixed(2)})`;
+          resultDiv.style.color = 'red';
+        }
+      } catch (err) {
+        resultDiv.textContent = 'Error: Gagal memproses gambar.';
+        resultDiv.style.color = 'red';
+        console.error(err);
+      } finally {
+        tensor && tensor.dispose();
+        loadingDiv.style.display = 'none';
+      }
+    }
+
+const bacaArtikelLink = document.getElementById('bacaArtikel');
+bacaArtikelLink.addEventListener('click', (event) => {
+  event.preventDefault();
+  const articlesSection = document.getElementById('articles');
+  articlesSection.scrollIntoView({ behavior: 'smooth' });
+});
+
+async function triggerPrediction() {
+  const model = await modelPromise;
+  if (!model || preview.src === '') {
+    alert('Model belum siap atau gambar belum dipilih.');
+    return;
+  }
+
+  loadingDiv.style.display = 'block';
+
+  let tensor = null;
+  try {
+    tensor = preprocessImage(preview);
+    const prediction = await model.predict(tensor).data();
+    const score = prediction[0];
+
+    // Tampilkan hasil dinamis
+    displayPredictionResult(score);
+
+  } catch (err) {
+    alert('Terjadi kesalahan saat prediksi.');
+    console.error(err);
+  } finally {
+    tensor && tensor.dispose();
+    loadingDiv.style.display = 'none';
+  }
+}
+
+
+function displayPredictionResult(score) {
+  const label = score > 0.8 ? 'FRESH!' : 'NOT FRESH!';
+  const percent = (score * 100).toFixed(2);
+  const color = score > 0.8 ? 'green' : 'red';
+  const message = score > 0.8
+    ? 'Ikan anda terlihat segar! Dapat anda konsumsi serta pastikan untuk menyimpannya dengan benar.'
+    : 'Ikan anda terlihat tidak segar. Sebaiknya tidak dikonsumsi dan periksa penyimpanannya.';
+
+  const boxHTML = `
+    <div style="
+      border: 2px dashed #0056b3;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: left;
+      max-width: 400px;
+      background-color: #f9f9f9;
+    ">
+      <div style="font-weight: bold; color: #0B3B73;">Hasil Prediksi:</div>
+      <div style="font-size: 20px; font-weight: bold; color: ${color};">${label}</div>
+      <div style="font-weight: bold; color: #0B3B73;">Tingkat Kepercayaan:</div>
+      <div style="font-size: 20px; font-weight: bold; color: ${color};">${percent}%</div>
+      <div style="margin-top: 10px; font-style: italic; color: #0B3B73;">${message}</div>
+    </div>
+  `;
+
+  const predictionBox = document.getElementById('predictionBox');
+  predictionBox.innerHTML = boxHTML;
+predictionBox.style.display = 'flex';
+predictionBox.style.justifyContent = 'center'; // horizontal center
+predictionBox.style.marginTop = '20px'; // agar ada jarak atas, opsional
+}
+
+  </script>
+</body>
+</html>
