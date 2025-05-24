@@ -70,7 +70,7 @@
         </div>
         <input type="file" id="imageInput" accept="image/*" class="hidden" />
         <img id="preview" src="" alt="Preview of the uploaded fish eye image showing clarity and freshness" class="mt-4 rounded-lg shadow-md" />
-        <div id="loading" class="mt-2">Loading model or processing...</div>
+        <div id="loading" class="mt-2">Memproses...</div>
         <div id="result" class="mt-2">Prediction: None</div>
         <button onclick="triggerPrediction()" class="block mx-auto mt-6 bg-[#0B3B73] hover:bg-[#094a5f] text-white text-sm font-semibold px-8 py-2 rounded transition-colors duration-200" type="button">
           Cek Kesegaran Ikan
@@ -87,7 +87,7 @@
           <div class="flex flex-col text-xs sm:text-sm leading-5 text-[#0B3B73]">
             <h3 class="font-semibold mb-1">Ciri-Ciri Ikan Segar yang Perlu Kamu Ketahui</h3>
             <p class="mb-2">Kondisi tubuh, kondisi kesegaran dan mata, warna, hingga aroma ikan segar kamu tak salah pilih saat belanja di pasar.</p>
-            <a class="text-[#0B3B73] underline self-start" href="#">Baca Selengkapnya</a>
+            <a class="text-[#0B3B73] underline self-start" href="artikel1.html">Baca Selengkapnya</a>
           </div>
         </article>
         <article class="flex space-x-4 mb-6">
@@ -95,7 +95,7 @@
           <div class="flex flex-col text-xs sm:text-sm leading-5 text-[#0B3B73]">
             <h3 class="font-semibold mb-1">Bahaya Mengonsumsi Ikan Tidak Segar</h3>
             <p class="mb-2">Ikan yang tak segar bisa memicu masalah pencernaan hingga keracunan. Pelajari risikonya dan cara menghindarinya.</p>
-            <a class="text-[#0B3B73] underline self-start" href="#">Baca Selengkapnya</a>
+            <a class="text-[#0B3B73] underline self-start" href="artikel2.html">Baca Selengkapnya</a>
           </div>
         </article>
         <article class="flex space-x-4">
@@ -103,7 +103,7 @@
           <div class="flex flex-col text-xs sm:text-sm leading-5 text-[#0B3B73]">
             <h3 class="font-semibold mb-1">Tips Menyimpan Ikan agar Tetap Segar Lebih Lama</h3>
             <p class="mb-2">Simpan ikan dengan cara yang benar di kulkas atau freezer agar kualitas dan rasa tetap terjaga lebih dari satu hari.</p>
-            <a class="text-[#0B3B73] underline self-start" href="#">Baca Selengkapnya</a>
+            <a class="text-[#0B3B73] underline self-start" href="artikel3.html">Baca Selengkapnya</a>
           </div>
         </article>
       </section>
@@ -143,7 +143,7 @@
       if (!file) return;
       preview.src = URL.createObjectURL(file);
       preview.style.display = 'block';
-      resultDiv.textContent = 'Prediction: Image loaded, ready to check.';
+      resultDiv.textContent = 'Gambar sudah diupload';
       resultDiv.style.color = '#0B3B73';
     });
 
@@ -204,7 +204,13 @@ async function triggerPrediction() {
     return;
   }
 
+  // Tampilkan pesan analisis
+  resultDiv.textContent = '';
+  resultDiv.style.color = '#0B3B73';
   loadingDiv.style.display = 'block';
+  
+  // Tunggu sejenak sebelum mulai prediksi (500ms)
+  await new Promise(resolve => setTimeout(resolve, 500));
 
   let tensor = null;
   try {
@@ -223,6 +229,7 @@ async function triggerPrediction() {
     loadingDiv.style.display = 'none';
   }
 }
+
 
 
 function displayPredictionResult(score) {
